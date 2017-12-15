@@ -13,10 +13,20 @@ import Layout from 'containers/layout';
 import Phones from 'containers/phones';
 import Phone from 'containers/phone';
 import Basket from 'containers/basket';
+import {loadState,saveState} from 'localStorage';
 
-const store = createStore(reducers, composeWithDevTools(
+
+const persistedState = loadState();
+
+const store = createStore(reducers,persistedState, composeWithDevTools(
     applyMiddleware(reduxThunk)
 ));
+store.subscribe(()=>{
+    saveState({
+        basket:store.getState().basket,
+        phones:store.getState().phones,
+    });
+})
 const history = syncHistoryWithStore(browserHistory, store);
 
 ReactDOM.render(
